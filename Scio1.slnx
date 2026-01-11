@@ -1,3 +1,6 @@
 <Solution>
+  <Project Path="Scio1.BL/Scio1.BL.csproj" Id="0504f258-599b-4231-b398-43e833ab4a1a" />
+  <Project Path="Scio1.Common/Scio1.Common.csproj" Id="f888a4f1-fa48-4c2a-9f40-ed6e17733b33" />
+  <Project Path="Scio1.DAL/Scio1.DAL.csproj" Id="2c0d2e3b-cd6a-4fe9-84e7-9e03f2e47250" />
   <Project Path="Scio1.WebApp/Scio1.WebApp.csproj" />
 </Solution>

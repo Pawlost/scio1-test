@@ -1,0 +1,63 @@
+﻿@* @page "/meetingmodels/create"
+@using Microsoft.EntityFrameworkCore
+@using Scio1.BL.Models
+@using Scio1.DAL
+@inject IDbContextFactory<Scio1WebAppContext> 
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>MeetingModel</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="MeetingModel" OnValidSubmit="AddMeetingModel" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="start" class="form-label">Start:</label> 
+                <InputDate id="start" @bind-Value="MeetingModel.Start" class="form-control" /> 
+                <ValidationMessage For="() => MeetingModel.Start" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="end" class="form-label">End:</label> 
+                <InputDate id="end" @bind-Value="MeetingModel.End" class="form-control" /> 
+                <ValidationMessage For="() => MeetingModel.End" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="title" class="form-label">Title:</label> 
+                <InputText id="title" @bind-Value="MeetingModel.Title" class="form-control" /> 
+                <ValidationMessage For="() => MeetingModel.Title" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="description" class="form-label">Description:</label> 
+                <InputText id="description" @bind-Value="MeetingModel.Description" class="form-control" /> 
+                <ValidationMessage For="() => MeetingModel.Description" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/meetingmodels">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private MeetingModel MeetingModel { get; set; } = default!;
+
+    protected override void OnInitialized() => MeetingModel ??= new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddMeetingModel()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.MeetingModel.Add(MeetingModel);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/meetingmodels");
+    }
+}
+ *@

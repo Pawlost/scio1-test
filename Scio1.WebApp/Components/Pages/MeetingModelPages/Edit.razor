@@ -1,0 +1,106 @@
+﻿@page "/meetingmodels/edit"
+@using Microsoft.EntityFrameworkCore
+@using Scio1.BL.Models
+@using Scio1.DAL
+@using Scio1.DAL.Entities
+@inject IDbContextFactory<Scio1DbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>MeetingModel</h2>
+<hr />
+@if (MeetingModel is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="MeetingModel" OnValidSubmit="UpdateMeetingModel" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="MeetingModel.Id" value="@MeetingModel.Id" />
+                <div class="mb-3">
+                    <label for="start" class="form-label">Start:</label>
+                    <InputDate id="start" @bind-Value="MeetingModel.Start" class="form-control" />
+                    <ValidationMessage For="() => MeetingModel.Start" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="end" class="form-label">End:</label>
+                    <InputDate id="end" @bind-Value="MeetingModel.End" class="form-control" />
+                    <ValidationMessage For="() => MeetingModel.End" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title:</label>
+                    <InputText id="title" @bind-Value="MeetingModel.Title" class="form-control" />
+                    <ValidationMessage For="() => MeetingModel.Title" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <InputText id="description" @bind-Value="MeetingModel.Description" class="form-control" />
+                    <ValidationMessage For="() => MeetingModel.Description" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/meetingmodels">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private Guid Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private MeetingEntity? MeetingModel { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        MeetingModel ??= await context.MeetingModel.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (MeetingModel is null)
+        {
+            NavigationManager.NotFound();
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateMeetingModel()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(MeetingModel!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!MeetingModelExists(MeetingModel!.Id))
+            {
+                NavigationManager.NotFound();
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/meetingmodels");
+    }
+
+    private bool MeetingModelExists(Guid id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.MeetingModel.Any(e => e.Id == id);
+    }
+}

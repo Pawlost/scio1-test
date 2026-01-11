@@ -1,0 +1,39 @@
+﻿@page "/meetingmodels"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Microsoft.EntityFrameworkCore
+@using Scio1.BL.Models
+@using Scio1.DAL
+@implements IAsyncDisposable
+@inject IDbContextFactory<Scio1DbContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="meetingmodels/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.MeetingModel">
+    <PropertyColumn Property="meetingmodel => meetingmodel.Start" />
+    <PropertyColumn Property="meetingmodel => meetingmodel.End" />
+    <PropertyColumn Property="meetingmodel => meetingmodel.Title" />
+    <PropertyColumn Property="meetingmodel => meetingmodel.Description" />
+
+    <TemplateColumn Context="meetingmodel">
+        <a href="@($"meetingmodels/edit?id={meetingmodel.Id}")">Edit</a> |
+        <a href="@($"meetingmodels/details?id={meetingmodel.Id}")">Details</a> |
+        <a href="@($"meetingmodels/delete?id={meetingmodel.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private Scio1DbContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

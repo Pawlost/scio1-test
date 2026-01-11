@@ -3,6 +3,7 @@ using Microsoft.JSInterop;
 
 namespace Scio1.WebApp.Components.Pages
 {
+    /*
     public partial class Calendar
     {
         public List<FullCalendarEventWrapper> Events { get; set; } = new()
@@ -30,5 +31,5 @@ namespace Scio1.WebApp.Components.Pages
                 await JSRuntime.InvokeVoidAsync("initializeCalendar", CalendarId, Events);
             }
         }
-    }
+    }*/
 }
